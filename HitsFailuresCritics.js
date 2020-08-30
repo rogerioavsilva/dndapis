@@ -443,29 +443,29 @@ on("chat:message", function(msg) {
  
   if(msg.type == "api" && msg.content.indexOf("!HitsCritical") !== -1) {
     var hit = _critico(criticalsHit, rolled);
-    var criticalType = msg.content.replace("!HitsCritical ", "");
+    var criticalTypeOption = msg.content.replace("!HitsCritical ", "");
 
     var table = "Try Again";
 
     table =  "<table> "+
                       "<tr> "+
-                        "<th "+ styleTh +"><b "+ styleHits +">Acerto Crítico [ "+ rolled +" ]</b></th> "+
+                        "<th "+ styleTh +"><b "+ styleHits +">Acerto Crítico [ "+ rolled +" ]</b> &#x1f340;</th> "+
                       "</tr> ";
     
-    if(criticalType === "contusao"){
-        table = table + GetCriticalTemplate(styleCont, _.findWhere(hit.criticalType, {"type":"contusao"}));
-    }else if(criticalType === "perfuracao"){
-        table = table + GetCriticalTemplate(stylePerf, _.findWhere(hit.criticalType, {"type":"perfuracao"}));
-    }else if(criticalType === "cortante"){
-        table = table + GetCriticalTemplate(styleCort,  _.findWhere(hit.criticalType, {"type":"cortante"}));
-    }else if(criticalType === "magico"){
-        table = table + GetCriticalTemplate(styleMag, _.findWhere(hit.criticalType, {"type":"magico"}));
+    if(criticalTypeOption === "contusao"){
+        table = table + GetCriticalTemplate(styleCont, _.findWhere(hit.criticalType, {"type":"contusao"}),GetHitIcon(criticalTypeOption));
+    }else if(criticalTypeOption === "perfuracao"){
+        table = table + GetCriticalTemplate(stylePerf, _.findWhere(hit.criticalType, {"type":"perfuracao"}),GetHitIcon(criticalTypeOption));
+    }else if(criticalTypeOption === "cortante"){
+        table = table + GetCriticalTemplate(styleCort,  _.findWhere(hit.criticalType, {"type":"cortante"}),GetHitIcon(criticalTypeOption));
+    }else if(criticalTypeOption === "magico"){
+        table = table + GetCriticalTemplate(styleMag, _.findWhere(hit.criticalType, {"type":"magico"}),GetHitIcon(criticalTypeOption));
     }else{
         table = table + 
-                GetCriticalTemplate(styleCont, _.findWhere(hit.criticalType, {"type":"contusao"})) +
-                GetCriticalTemplate(stylePerf, _.findWhere(hit.criticalType, {"type":"perfuracao"})) +
-                GetCriticalTemplate(styleCort,  _.findWhere(hit.criticalType, {"type":"cortante"})) +
-                GetCriticalTemplate(styleMag, _.findWhere(hit.criticalType, {"type":"magico"}));
+                GetCriticalTemplate(styleCont, _.findWhere(hit.criticalType, {"type":"contusao"}),GetHitIcon("contusao")) +
+                GetCriticalTemplate(stylePerf, _.findWhere(hit.criticalType, {"type":"perfuracao"}),GetHitIcon("perfuracao")) +
+                GetCriticalTemplate(styleCort,  _.findWhere(hit.criticalType, {"type":"cortante"}),GetHitIcon("cortante")) +
+                GetCriticalTemplate(styleMag, _.findWhere(hit.criticalType, {"type":"magico"}),GetHitIcon("magico"));
     }
     
     table = table + "</table> </br>";
@@ -476,29 +476,29 @@ on("chat:message", function(msg) {
   
   if(msg.type == "api" && msg.content.indexOf("!FailureCritical") !== -1) {
     var fail = _critico(criticalFailure, rolled);  
-    var criticalType = msg.content.replace("!FailureCritical ", "");
+    var criticalTypeOption = msg.content.replace("!FailureCritical ", "");
 
     var table = "Try Again";
 
     table =  "<table> "+
                       "<tr> "+
-                        "<th "+ styleTh +"><b "+ styleFailure +">Falha Crítica [ "+ rolled +" ]</b></th> "+
+                        "<th "+ styleTh +"><b "+ styleFailure +">Falha Crítica [ "+ rolled +" ]</b> &#x1f4a9;</th> "+
                       "</tr> ";
     
-    if(criticalType === "melee"){
-        table = table + GetCriticalTemplate(styleCont, _.findWhere(fail.criticalType, {"type":"melee"}));
-    }else if(criticalType === "range"){
-        table = table + GetCriticalTemplate(stylePerf, _.findWhere(fail.criticalType, {"type":"range"}));
-    }else if(criticalType === "natural"){
-        table = table + GetCriticalTemplate(styleCort,  _.findWhere(fail.criticalType, {"type":"natural"}));
-    }else if(criticalType === "magic"){
-        table = table + GetCriticalTemplate(styleMag, _.findWhere(fail.criticalType, {"type":"magic"}));
+    if(criticalTypeOption === "melee"){
+        table = table + GetCriticalTemplate(styleCont, _.findWhere(fail.criticalType, {"type":"melee"}), GetFailIcon(criticalTypeOption));
+    }else if(criticalTypeOption === "range"){
+        table = table + GetCriticalTemplate(stylePerf, _.findWhere(fail.criticalType, {"type":"range"}), GetFailIcon(criticalTypeOption));
+    }else if(criticalTypeOption === "natural"){
+        table = table + GetCriticalTemplate(styleCort,  _.findWhere(fail.criticalType, {"type":"natural"}), GetFailIcon(criticalTypeOption));
+    }else if(criticalTypeOption === "magic"){
+        table = table + GetCriticalTemplate(styleMag, _.findWhere(fail.criticalType, {"type":"magic"}), GetFailIcon(criticalTypeOption));
     }else{
         table = table + 
-                GetCriticalTemplate(styleCont, _.findWhere(fail.criticalType, {"type":"melee"})) +
-                GetCriticalTemplate(stylePerf, _.findWhere(fail.criticalType, {"type":"range"})) +
-                GetCriticalTemplate(styleCort,  _.findWhere(fail.criticalType, {"type":"natural"})) +
-                GetCriticalTemplate(styleMag, _.findWhere(fail.criticalType, {"type":"magic"}));
+                GetCriticalTemplate(styleCont, _.findWhere(fail.criticalType, {"type":"melee"}), GetFailIcon("melee")) +
+                GetCriticalTemplate(stylePerf, _.findWhere(fail.criticalType, {"type":"range"}), GetFailIcon("range")) +
+                GetCriticalTemplate(styleCort,  _.findWhere(fail.criticalType, {"type":"natural"}), GetFailIcon("natural")) +
+                GetCriticalTemplate(styleMag, _.findWhere(fail.criticalType, {"type":"magic"}), GetFailIcon("magic"));
     }
     
     table = table + "</table> </br>";
@@ -512,13 +512,43 @@ on("chat:message", function(msg) {
     });
   };
   
-  function GetCriticalTemplate(style, criticalType){
+  function GetCriticalTemplate(style, criticalType, criticalIcon){
     return  "<tr "+ styleTh +"> "+
-                "<td><b "+ style +">"+ criticalType.typeDescription +" &#x2692;</b></td> "+
+                "<td><b "+ style +">"+ criticalType.typeDescription +"</b> " + criticalIcon + " </td> "+
             "</tr> "+
             "<tr> "+
                 "<td "+ styleTh +"><b "+ style +">"+ criticalType.title +"</b>, "+ criticalType.description +"</td> "+
             "</tr> ";  
   };
+
+  function GetHitIcon(criticalTypeOption){
+    switch(criticalTypeOption) {
+      case "contusao":
+        return "&#x1f528;";
+      case "cortante":
+        return "&#x1f52a;";
+      case "perfuracao":
+        return "&#x1f531;";
+      case "magico":
+        return "&#x1f52e;";      
+      default:
+        return "&#x1f340;";   
+    }
+  }
+
+function GetFailIcon(criticalTypeOption){
+  switch(criticalTypeOption) {
+    case "melee":
+      return "&#x1f4aa;";
+    case "range":
+      return "&#x1f3af;";
+    case "natural":
+      return "&#x1f43e;";
+    case "magic":
+      return "&#x1f52e;";      
+    default:
+      return "&#x1f4a9;";   
+  }
+}
   
 });
